@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="AppAuthentication" Class="AuthenticationDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=TwinHome;Initial Catalog=AppAuthentication;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="AppAuthenticationConnectionString" Provider="System.Data.SqlClient" />
+  <Function Name="dbo.appAuth_Applications_CreateApplication" Method="appAuth_Applications_CreateApplication">
+    <Parameter Name="AppName" Parameter="appName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="AppId" Parameter="appId" Type="System.Guid" DbType="UniqueIdentifier" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.appAuth_Membership_CreateUser" Method="appAuth_Membership_CreateUser">
+    <Parameter Name="AppName" Parameter="appName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="UserName" Parameter="userName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="PrePassword" Parameter="prePassword" Type="System.String" DbType="NVarChar(MAX)" />
+    <Parameter Name="Email" Parameter="email" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="IsApproved" Parameter="isApproved" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="CurrentTimeUtc" Parameter="currentTimeUtc" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="CreateDate" Parameter="createDate" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="UniqueEmail" Parameter="uniqueEmail" Type="System.Int32" DbType="Int" />
+    <Parameter Name="RoleName" Parameter="roleName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="UserId" Parameter="userId" Type="System.Guid" DbType="UniqueIdentifier" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.appAuth_Membership_SetPassword" Method="appAuth_Membership_SetPassword">
+    <Parameter Name="AppName" Parameter="appName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="UserName" Parameter="userName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="NewPassword" Parameter="newPassword" Type="System.String" DbType="NVarChar(256)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.appAuth_Membership_UpdateUser" Method="appAuth_Membership_UpdateUser">
+    <Parameter Name="AppName" Parameter="appName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="UserName" Parameter="userName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="Email" Parameter="email" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="IsApproved" Parameter="isApproved" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="LastLoginDate" Parameter="lastLoginDate" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="LastActivityDate" Parameter="lastActivityDate" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="UniqueEmail" Parameter="uniqueEmail" Type="System.Int32" DbType="Int" />
+    <Parameter Name="CurrentTimeUtc" Parameter="currentTimeUtc" Type="System.DateTime" DbType="DateTime" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.appAuth_Roles_CreateRole" Method="appAuth_Roles_CreateRole">
+    <Parameter Name="AppName" Parameter="appName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="RoleName" Parameter="roleName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="RoleID" Parameter="roleID" Type="System.Guid" DbType="UniqueIdentifier" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.appAuth_Users_DeleteUser" Method="appAuth_Users_DeleteUser">
+    <Parameter Name="AppName" Parameter="appName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="UserName" Parameter="userName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="TablesToDeleteFrom" Parameter="tablesToDeleteFrom" Type="System.Int32" DbType="Int" />
+    <Parameter Name="NumTablesDeletedFrom" Parameter="numTablesDeletedFrom" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.appAuth_ValidateUser" Method="appAuth_ValidateUser">
+    <Parameter Name="appName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="userName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="password" Type="System.String" DbType="NVarChar(MAX)" />
+    <ElementType Name="appAuth_ValidateUserResult">
+      <Column Name="ReturnCode" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="UserName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="RoleName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="LastLoginDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastActivityDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+</Database>

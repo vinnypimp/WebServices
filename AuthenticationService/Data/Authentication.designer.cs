@@ -70,12 +70,11 @@ namespace AuthenticationService.Data
 			return ((int)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.appAuth_Membership_CreateUser")]
-		public int appAuth_Membership_CreateUser([global::System.Data.Linq.Mapping.ParameterAttribute(Name="AppName", DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UserName", DbType="NVarChar(256)")] string userName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PrePassword", DbType="NVarChar(MAX)")] string prePassword, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Email", DbType="NVarChar(256)")] string email, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsApproved", DbType="Bit")] System.Nullable<bool> isApproved, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CurrentTimeUtc", DbType="DateTime")] System.Nullable<System.DateTime> currentTimeUtc, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CreateDate", DbType="DateTime")] System.Nullable<System.DateTime> createDate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UniqueEmail", DbType="Int")] System.Nullable<int> uniqueEmail, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RoleName", DbType="NVarChar(256)")] string roleName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UserId", DbType="UniqueIdentifier")] ref System.Nullable<System.Guid> userId)
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.appAuth_Checks")]
+		public ISingleResult<appAuth_ChecksResult> appAuth_Checks([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(256)")] string userName, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(256)")] string email)
 		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), appName, userName, prePassword, email, isApproved, currentTimeUtc, createDate, uniqueEmail, roleName, userId);
-			userId = ((System.Nullable<System.Guid>)(result.GetParameterValue(9)));
-			return ((int)(result.ReturnValue));
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), appName, userName, email);
+			return ((ISingleResult<appAuth_ChecksResult>)(result.ReturnValue));
 		}
 		
 		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.appAuth_Membership_SetPassword")]
@@ -114,29 +113,29 @@ namespace AuthenticationService.Data
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), appName, userName, password);
 			return ((ISingleResult<appAuth_ValidateUserResult>)(result.ReturnValue));
 		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.appAuth_Membership_CreateUser")]
+		public int appAuth_Membership_CreateUser([global::System.Data.Linq.Mapping.ParameterAttribute(Name="AppName", DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UserName", DbType="NVarChar(256)")] string userName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PrePassword", DbType="NVarChar(MAX)")] string prePassword, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Email", DbType="NVarChar(256)")] string email, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CurrentTimeUtc", DbType="DateTime")] System.Nullable<System.DateTime> currentTimeUtc, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RoleName", DbType="NVarChar(256)")] string roleName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsApproved", DbType="Bit")] System.Nullable<bool> isApproved, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CreateDate", DbType="DateTime")] System.Nullable<System.DateTime> createDate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UniqueEmail", DbType="Int")] System.Nullable<int> uniqueEmail, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UserId", DbType="UniqueIdentifier")] ref System.Nullable<System.Guid> userId)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), appName, userName, prePassword, email, currentTimeUtc, roleName, isApproved, createDate, uniqueEmail, userId);
+			userId = ((System.Nullable<System.Guid>)(result.GetParameterValue(9)));
+			return ((int)(result.ReturnValue));
+		}
 	}
 	
-	public partial class appAuth_ValidateUserResult
+	public partial class appAuth_ChecksResult
 	{
 		
-		private int _ReturnCode;
+		private System.Nullable<int> _ReturnCode;
 		
-		private string _UserName;
+		private string _ReturnReason;
 		
-		private string _Email;
-		
-		private string _RoleName;
-		
-		private System.Nullable<System.DateTime> _LastLoginDate;
-		
-		private System.DateTime _LastActivityDate;
-		
-		public appAuth_ValidateUserResult()
+		public appAuth_ChecksResult()
 		{
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReturnCode", DbType="Int NOT NULL")]
-		public int ReturnCode
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReturnCode", DbType="Int")]
+		public System.Nullable<int> ReturnCode
 		{
 			get
 			{
@@ -151,6 +150,48 @@ namespace AuthenticationService.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReturnReason", DbType="NVarChar(100)")]
+		public string ReturnReason
+		{
+			get
+			{
+				return this._ReturnReason;
+			}
+			set
+			{
+				if ((this._ReturnReason != value))
+				{
+					this._ReturnReason = value;
+				}
+			}
+		}
+	}
+	
+	public partial class appAuth_ValidateUserResult
+	{
+		
+		private string _UserName;
+		
+		private string _FirstName;
+		
+		private string _LastName;
+		
+		private string _Email;
+		
+		private string _RoleName;
+		
+		private System.Nullable<System.DateTime> _LastLoginDate;
+		
+		private System.DateTime _LastActivityDate;
+		
+		private string _ReturnCode;
+		
+		private string _ReturnReason;
+		
+		public appAuth_ValidateUserResult()
+		{
+		}
+		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserName", DbType="NVarChar(256) NOT NULL", CanBeNull=false)]
 		public string UserName
 		{
@@ -163,6 +204,38 @@ namespace AuthenticationService.Data
 				if ((this._UserName != value))
 				{
 					this._UserName = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_FirstName", DbType="NVarChar(250)")]
+		public string FirstName
+		{
+			get
+			{
+				return this._FirstName;
+			}
+			set
+			{
+				if ((this._FirstName != value))
+				{
+					this._FirstName = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastName", DbType="NVarChar(250)")]
+		public string LastName
+		{
+			get
+			{
+				return this._LastName;
+			}
+			set
+			{
+				if ((this._LastName != value))
+				{
+					this._LastName = value;
 				}
 			}
 		}
@@ -227,6 +300,38 @@ namespace AuthenticationService.Data
 				if ((this._LastActivityDate != value))
 				{
 					this._LastActivityDate = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReturnCode", DbType="NVarChar(10)")]
+		public string ReturnCode
+		{
+			get
+			{
+				return this._ReturnCode;
+			}
+			set
+			{
+				if ((this._ReturnCode != value))
+				{
+					this._ReturnCode = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReturnReason", DbType="NVarChar(100)")]
+		public string ReturnReason
+		{
+			get
+			{
+				return this._ReturnReason;
+			}
+			set
+			{
+				if ((this._ReturnReason != value))
+				{
+					this._ReturnReason = value;
 				}
 			}
 		}

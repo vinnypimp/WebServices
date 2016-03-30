@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Web;
+using System.IO;
 using AuthenticationService.Models;
 
 namespace AuthenticationService.Services
@@ -18,7 +14,12 @@ namespace AuthenticationService.Services
         [WebInvoke(Method = "GET", ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Wrapped,
             UriTemplate = "validateUser")]
-        User ValidateUser(string UserName, string HashedPassword);
+        AuthenticationResults ValidateUser(string AppName, string UserName, string HashedPassword);
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Wrapped,
+            UriTemplate = "registerNewUser")]
+        wsSQLResult NewUser(Stream JSONdataStream);
     }
 }

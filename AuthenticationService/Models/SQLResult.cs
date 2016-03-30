@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Runtime.Serialization;
 
-namespace HomeNetworkService
+namespace AuthenticationService.Models
 {
     [DataContract]
     public class wsSQLResult
@@ -14,5 +14,8 @@ namespace HomeNetworkService
 
         [DataMember]
         public string Exception { get; set; }
+
+        [DataMember]
+        public int ReturnCode { get; set; }
     }
 }

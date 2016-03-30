@@ -72,12 +72,13 @@
       <DependentUpon>Authentication.dbml</DependentUpon>
     </Compile>
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\AuthenticationResults.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IAuthSvc.cs" />
     <Compile Include="Services\AuthSvc.svc.cs">
       <DependentUpon>AuthSvc.svc</DependentUpon>
     </Compile>
-    <Compile Include="SQLResult.cs" />
+    <Compile Include="Models\SQLResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -89,6 +90,12 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Data\Authentication.dbml.views">
+      <DependentUpon>Authentication.dbml</DependentUpon>
+    </Content>
+    <Content Include="Data\Authentication.dbml.syncPrefs">
+      <DependentUpon>Authentication.dbml</DependentUpon>
+    </Content>
+    <Content Include="Data\Authentication.dbml.namePrefs">
       <DependentUpon>Authentication.dbml</DependentUpon>
     </Content>
     <None Include="Web.Debug.config">

@@ -10,6 +10,10 @@ namespace AuthenticationService.Models
     [Serializable]
         public class User
         {
+
+        [DataMember]
+        public string AppName { get; set; }
+
         [DataMember]
         public string UserName { get; set; }
 
@@ -27,6 +31,5 @@ namespace AuthenticationService.Models
 
         [DataMember]
         public string LastName { get; set; }
-        
         }
 }

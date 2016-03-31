@@ -6,10 +6,30 @@ using System.Web.Script.Serialization;
 using AuthenticationService.Models;
 using AuthenticationService.Data;
 
-namespace AuthenticationService.Services
+namespace AuthenticationService
 {
     public class AuthSvc : IAuthSvc
     {
+        public List<AuthenticationResults> TestAuth()
+        {
+            AuthenticationDataContext dc = new AuthenticationDataContext();
+            List<AuthenticationResults> results = new List<AuthenticationResults>();
+
+            foreach (vw_appAuth_UserInfo auth in dc.vw_appAuth_UserInfos)
+            {
+                results.Add(new AuthenticationResults()
+                {
+                    UserName = auth.UserName,
+                    FirstName = auth.FirstName,
+                    LastName = auth.LastName,
+                    Email = auth.Email,
+                    Role = auth.RoleName
+                });
+            }
+
+            return results;
+        }
+
         public AuthenticationResults ValidateUser(string AppName, string UserName, string Password)
         {
             AuthenticationDataContext dc = new AuthenticationDataContext();

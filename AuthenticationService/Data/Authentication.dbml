@@ -1,5 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="AppAuthentication" Class="AuthenticationDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="WebSettings" ConnectionString="Data Source=TwinHome;Initial Catalog=AppAuthentication;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="AppAuthenticationConnectionString" Provider="System.Data.SqlClient" />
+  <Connection Mode="WebSettings" ConnectionString="Data Source=TwinHome;Initial Catalog=AppAuthentication;Persist Security Info=True;User ID=appDB" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="AppAuthenticationConnectionString1" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.vw_appAuth_UserInfo" Member="vw_appAuth_UserInfos">
+    <Type Name="vw_appAuth_UserInfo">
+      <Column Name="Email" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="LastLoginDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UserName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="LastActivityDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="RoleName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="UserID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="FirstName" Type="System.String" DbType="NVarChar(250)" CanBeNull="true" />
+      <Column Name="LastName" Type="System.String" DbType="NVarChar(250)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.vw_appAuth_ValidateUsers" Member="vw_appAuth_ValidateUsers">
+    <Type Name="vw_appAuth_ValidateUser">
+      <Column Name="UserName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="Password" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="AppName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="UserID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="FirstName" Type="System.String" DbType="NVarChar(250)" CanBeNull="true" />
+      <Column Name="LastName" Type="System.String" DbType="NVarChar(250)" CanBeNull="true" />
+    </Type>
+  </Table>
   <Function Name="dbo.appAuth_Applications_CreateApplication" Method="appAuth_Applications_CreateApplication">
     <Parameter Name="AppName" Parameter="appName" Type="System.String" DbType="NVarChar(256)" />
     <Parameter Name="AppId" Parameter="appId" Type="System.Guid" DbType="UniqueIdentifier" Direction="InOut" />

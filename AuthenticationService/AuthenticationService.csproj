@@ -71,6 +71,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Authentication.dbml</DependentUpon>
     </Compile>
+    <Compile Include="Models\Role.cs" />
+    <Compile Include="Models\App.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\AuthenticationResults.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,10 +81,10 @@
       <DependentUpon>AuthSvc.svc</DependentUpon>
     </Compile>
     <Compile Include="Models\SQLResult.cs" />
+    <Compile Include="Services\AuthenticationService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\Authentication.dbml">

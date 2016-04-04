@@ -14,5 +14,24 @@
         <elementListCompartment Id="1cb86d8d-c603-4f86-a8f0-eed44d63bd8b" absoluteBounds="3.765, 1.21, 1.9700000000000002, 1.4031982421875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
       </nestedChildShapes>
     </classShape>
+    <classShape Id="52383f8f-6528-4bc4-bed6-0dbfcb09a055" absoluteBounds="6.125, 3.875, 2, 1.7708968098958327">
+      <DataClassMoniker Name="/AuthenticationDataContext/appAuth_Role" />
+      <nestedChildShapes>
+        <elementListCompartment Id="14335c3c-9a34-47f8-8b57-60ea0fa7319f" absoluteBounds="6.14, 4.335, 1.9700000000000002, 1.2108968098958333" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="0511d62e-6fea-4de4-9a37-0630ce8e77fd" absoluteBounds="3.375, 4, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/AuthenticationDataContext/appAuth_Application" />
+      <nestedChildShapes>
+        <elementListCompartment Id="a072f5f3-d325-447f-afab-c5345cb30df4" absoluteBounds="3.39, 4.46, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(5.375 : 4.78929768880208); (6.125 : 4.78929768880208)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/AuthenticationDataContext/appAuth_Application/appAuth_Application_appAuth_Role" />
+      <nodes>
+        <classShapeMoniker Id="0511d62e-6fea-4de4-9a37-0630ce8e77fd" />
+        <classShapeMoniker Id="52383f8f-6528-4bc4-bed6-0dbfcb09a055" />
+      </nodes>
+    </associationConnector>
   </nestedChildShapes>
 </ordesignerObjectsDiagram>

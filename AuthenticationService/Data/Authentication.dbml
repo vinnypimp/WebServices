@@ -22,77 +22,103 @@
       <Column Name="LastName" Type="System.String" DbType="NVarChar(250)" CanBeNull="true" />
     </Type>
   </Table>
-  <Function Name="dbo.appAuth_Applications_CreateApplication" Method="appAuth_Applications_CreateApplication">
+  <Table Name="dbo.appAuth_Roles" Member="appAuth_Roles">
+    <Type Name="appAuth_Role">
+      <Column Name="RoleID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="AppID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="RoleName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="LoweredRoleName" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Association Name="appAuth_Application_appAuth_Role" Member="appAuth_Application" ThisKey="AppID" OtherKey="AppID" Type="appAuth_Application" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.appAuth_Applications" Member="appAuth_Applications">
+    <Type Name="appAuth_Application">
+      <Column Name="AppName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="AppID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="LoweredAppName" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Association Name="appAuth_Application_appAuth_Role" Member="appAuth_Roles" ThisKey="AppID" OtherKey="AppID" Type="appAuth_Role" />
+    </Type>
+  </Table>
+  <Function Name="dbo.sp_appAuth_Applications_CreateApplication" Method="sp_appAuth_Applications_CreateApplication">
     <Parameter Name="AppName" Parameter="appName" Type="System.String" DbType="NVarChar(256)" />
     <Parameter Name="AppId" Parameter="appId" Type="System.Guid" DbType="UniqueIdentifier" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="dbo.appAuth_Checks" Method="appAuth_Checks">
+  <Function Name="dbo.sp_appAuth_Checks" Method="sp_appAuth_Checks">
     <Parameter Name="appName" Type="System.String" DbType="NVarChar(256)" />
     <Parameter Name="userName" Type="System.String" DbType="NVarChar(256)" />
     <Parameter Name="email" Type="System.String" DbType="NVarChar(256)" />
-    <ElementType Name="appAuth_ChecksResult">
+    <ElementType Name="sp_appAuth_ChecksResult">
       <Column Name="ReturnCode" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="ReturnReason" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
     </ElementType>
   </Function>
-  <Function Name="dbo.appAuth_Membership_SetPassword" Method="appAuth_Membership_SetPassword">
+  <Function Name="dbo.sp_appAuth_Membership_SetPassword" Method="sp_appAuth_Membership_SetPassword">
     <Parameter Name="AppName" Parameter="appName" Type="System.String" DbType="NVarChar(256)" />
     <Parameter Name="UserName" Parameter="userName" Type="System.String" DbType="NVarChar(256)" />
     <Parameter Name="NewPassword" Parameter="newPassword" Type="System.String" DbType="NVarChar(256)" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="dbo.appAuth_Membership_UpdateUser" Method="appAuth_Membership_UpdateUser">
-    <Parameter Name="AppName" Parameter="appName" Type="System.String" DbType="NVarChar(256)" />
+  <Function Name="dbo.sp_appAuth_UserInfo" Method="sp_appAuth_UserInfo">
+    <Parameter Name="UserID" Parameter="userID" Type="System.Guid" DbType="UniqueIdentifier" />
+    <ElementType Name="sp_appAuth_UserInfoResult">
+      <Column Name="UserName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="FirstName" Type="System.String" DbType="NVarChar(250)" CanBeNull="true" />
+      <Column Name="LastName" Type="System.String" DbType="NVarChar(250)" CanBeNull="true" />
+      <Column Name="RoleName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="LastLoginDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastActivityDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.sp_appAuth_Users_CreateUser" Method="sp_appAuth_Users_CreateUser">
+    <Parameter Name="AppId" Parameter="appId" Type="System.Guid" DbType="UniqueIdentifier" />
     <Parameter Name="UserName" Parameter="userName" Type="System.String" DbType="NVarChar(256)" />
-    <Parameter Name="Email" Parameter="email" Type="System.String" DbType="NVarChar(256)" />
-    <Parameter Name="IsApproved" Parameter="isApproved" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="LastLoginDate" Parameter="lastLoginDate" Type="System.DateTime" DbType="DateTime" />
     <Parameter Name="LastActivityDate" Parameter="lastActivityDate" Type="System.DateTime" DbType="DateTime" />
-    <Parameter Name="UniqueEmail" Parameter="uniqueEmail" Type="System.Int32" DbType="Int" />
-    <Parameter Name="CurrentTimeUtc" Parameter="currentTimeUtc" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="RoleID" Parameter="roleID" Type="System.Guid" DbType="UniqueIdentifier" />
+    <Parameter Name="UserId" Parameter="userId" Type="System.Guid" DbType="UniqueIdentifier" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="dbo.appAuth_Roles_CreateRole" Method="appAuth_Roles_CreateRole">
-    <Parameter Name="AppName" Parameter="appName" Type="System.String" DbType="NVarChar(256)" />
-    <Parameter Name="RoleName" Parameter="roleName" Type="System.String" DbType="NVarChar(256)" />
-    <Parameter Name="RoleID" Parameter="roleID" Type="System.Guid" DbType="UniqueIdentifier" Direction="InOut" />
-    <Return Type="System.Int32" />
-  </Function>
-  <Function Name="dbo.appAuth_Users_DeleteUser" Method="appAuth_Users_DeleteUser">
+  <Function Name="dbo.sp_appAuth_Users_DeleteUser" Method="sp_appAuth_Users_DeleteUser">
     <Parameter Name="AppName" Parameter="appName" Type="System.String" DbType="NVarChar(256)" />
     <Parameter Name="UserName" Parameter="userName" Type="System.String" DbType="NVarChar(256)" />
     <Parameter Name="TablesToDeleteFrom" Parameter="tablesToDeleteFrom" Type="System.Int32" DbType="Int" />
     <Parameter Name="NumTablesDeletedFrom" Parameter="numTablesDeletedFrom" Type="System.Int32" DbType="Int" Direction="InOut" />
     <Return Type="System.Int32" />
   </Function>
-  <Function Name="dbo.appAuth_ValidateUser" Method="appAuth_ValidateUser">
+  <Function Name="dbo.sp_appAuth_ValidateUser" Method="sp_appAuth_ValidateUser">
     <Parameter Name="appName" Type="System.String" DbType="NVarChar(256)" />
-    <Parameter Name="userName" Type="System.String" DbType="NVarChar(256)" />
-    <Parameter Name="password" Type="System.String" DbType="NVarChar(MAX)" />
-    <ElementType Name="appAuth_ValidateUserResult">
+    <ElementType Name="sp_appAuth_ValidateUserResult">
+      <Column Name="UserID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
       <Column Name="UserName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
-      <Column Name="FirstName" Type="System.String" DbType="NVarChar(250)" CanBeNull="true" />
-      <Column Name="LastName" Type="System.String" DbType="NVarChar(250)" CanBeNull="true" />
-      <Column Name="Email" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
-      <Column Name="RoleName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
-      <Column Name="LastLoginDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="LastActivityDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="ReturnCode" Type="System.String" DbType="NVarChar(10)" CanBeNull="true" />
-      <Column Name="ReturnReason" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Password" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
     </ElementType>
   </Function>
-  <Function Name="dbo.appAuth_Membership_CreateUser" Method="appAuth_Membership_CreateUser">
+  <Function Name="dbo.sp_appAuth_Membership_CreateUser" Method="sp_appAuth_Membership_CreateUser">
     <Parameter Name="AppName" Parameter="appName" Type="System.String" DbType="NVarChar(256)" />
     <Parameter Name="UserName" Parameter="userName" Type="System.String" DbType="NVarChar(256)" />
     <Parameter Name="PrePassword" Parameter="prePassword" Type="System.String" DbType="NVarChar(MAX)" />
     <Parameter Name="Email" Parameter="email" Type="System.String" DbType="NVarChar(256)" />
-    <Parameter Name="CurrentTimeUtc" Parameter="currentTimeUtc" Type="System.DateTime" DbType="DateTime" />
-    <Parameter Name="RoleName" Parameter="roleName" Type="System.String" DbType="NVarChar(256)" />
-    <Parameter Name="IsApproved" Parameter="isApproved" Type="System.Boolean" DbType="Bit" />
-    <Parameter Name="CreateDate" Parameter="createDate" Type="System.DateTime" DbType="DateTime" />
-    <Parameter Name="UniqueEmail" Parameter="uniqueEmail" Type="System.Int32" DbType="Int" />
     <Parameter Name="UserId" Parameter="userId" Type="System.Guid" DbType="UniqueIdentifier" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.sp_appAuth_Roles_CreateRole" Method="sp_appAuth_Roles_CreateRole">
+    <Parameter Name="AppName" Parameter="appName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="RoleName" Parameter="roleName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="RoleID" Parameter="roleID" Type="System.Guid" DbType="UniqueIdentifier" Direction="InOut" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.sp_appAuth_Membership_UpdateUser" Method="sp_appAuth_Membership_UpdateUser">
+    <Parameter Name="AppName" Parameter="appName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="UserName" Parameter="userName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="Email" Parameter="email" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="RoleName" Parameter="roleName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="FirstName" Parameter="firstName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="LastName" Parameter="lastName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="IsApproved" Parameter="isApproved" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="LastLoginDate" Parameter="lastLoginDate" Type="System.DateTime" DbType="DateTime" />
     <Return Type="System.Int32" />
   </Function>
 </Database>

@@ -5,11 +5,13 @@ using System.IO;
 using System.Web.Script.Serialization;
 using AuthenticationService.Models;
 using AuthenticationService.Data;
+using AuthenticationService.Services;
 
 namespace AuthenticationService
 {
     public class AuthSvc : IAuthSvc
     {
+        #region Test Services
         public List<AuthenticationResults> TestAuth()
         {
             AuthenticationDataContext dc = new AuthenticationDataContext();
@@ -26,29 +28,70 @@ namespace AuthenticationService
                     Role = auth.RoleName
                 });
             }
-
+            
             return results;
         }
 
-        public AuthenticationResults ValidateUser(string AppName, string UserName, string Password)
+        public List<User> TestVal()
         {
             AuthenticationDataContext dc = new AuthenticationDataContext();
-            AuthenticationResults results = new AuthenticationResults();
+            List<User> results = new List<User>();
 
-            foreach (appAuth_ValidateUserResult auth in dc.appAuth_ValidateUser(AppName, UserName, Password))
+            foreach (vw_appAuth_ValidateUser auth in dc.vw_appAuth_ValidateUsers)
             {
-                results.UserName = auth.UserName;
-                results.Email = auth.Email;
-                results.Role = auth.RoleName;
-                results.FirstName = auth.FirstName;
-                results.LastName = auth.LastName;
-                results.ReturnCode = auth.ReturnCode;
-                results.ReturnReason = auth.ReturnReason;
-            };
+                results.Add(new User()
+                {
+                    AppName = auth.AppName,
+                    UserName = auth.UserName,
+                    FirstName = auth.FirstName,
+                    LastName = auth.LastName,
+                    HashPassword = auth.Password,
+                    UserID= auth.UserID
+                });
+            }
 
             return results;
         }
+        #endregion
 
+        #region Validate User
+        public AuthenticationResults ValidateUser(Stream JSONdataStream)
+       {
+            AuthenticationResults auth = new AuthenticationResults();
+            try
+            {
+                //Read JSON Stream into a string
+                StreamReader reader = new StreamReader(JSONdataStream);
+                string JSONdata = reader.ReadToEnd();
+
+                //Convert to Authentication Results
+                JavaScriptSerializer jss = new JavaScriptSerializer();
+                LoginUser luser = jss.Deserialize<LoginUser>(JSONdata);
+                if (luser == null)
+                {
+                    //Error: Coudln't deserialize JSON string
+                    auth.ReturnCode = 100;
+                    auth.ReturnReason = "Unable to deserialize the JSON data.";
+                    return auth;
+                }
+
+                else
+                {
+                    AuthenticationServices authenticate = new Services.AuthenticationServices();
+                    auth = authenticate.AuthenticateUser(luser);
+                }
+                return auth;
+            }
+            catch (Exception ex)
+            {
+                auth.ReturnCode = 0;
+                auth.ReturnReason = ex.Message;
+                return auth;
+            }
+        }
+        #endregion  
+
+        #region Users
         public wsSQLResult NewUser(Stream JSONdataStream)
         {
             wsSQLResult result = new wsSQLResult();
@@ -75,22 +118,21 @@ namespace AuthenticationService
                 {
                    Guid? r = new Guid?();
                    AuthenticationDataContext dc = new AuthenticationDataContext();
-                   returnCode = dc.appAuth_Membership_CreateUser(
+                   returnCode = (int)dc.sp_appAuth_Membership_CreateUser(
                    user.AppName,
                    user.UserName,
-                   user.HashedPassword,
+                   user.HashPassword,
                    user.Email,
-                   DateTime.Now,
-                   "User", false, DateTime.Now, 0, ref r);
+                   ref r);
                    dc.SubmitChanges();
                 }
 
-                result.ReturnCode = returnCode;
+                result.ReturnCode = 1;
                 return result;
             }
             catch (Exception ex)
             {
-                result.WasSuccessful = -1;
+                result.WasSuccessful = 0;
                 result.Exception = "An exception occurred: " + ex.Message;
                 return result;
             }
@@ -100,21 +142,259 @@ namespace AuthenticationService
         {
             AuthenticationDataContext dc = new AuthenticationDataContext();
 
-            foreach (appAuth_ChecksResult checks in dc.appAuth_Checks(appName, username, email))
+            foreach (sp_appAuth_ChecksResult checks in dc.sp_appAuth_Checks(appName, username, email))
             {
                 returnCode = Convert.ToInt16(checks.ReturnCode);
                 returnReason = checks.ReturnReason;
             }
         }
 
+        public wsSQLResult UpdateUser(Stream JSONdataStream)
+        {
+            wsSQLResult result = new wsSQLResult();
+            try
+            {
+                //Read JSON Stream into a String..
+                StreamReader reader = new StreamReader(JSONdataStream);
+                string JSONdata = reader.ReadToEnd();
 
-        //public string AppName { get; set; }
-        //public string UserName { get; set; }
-        //public string Password { get; set; }
-        //public string Email { get; set; }
-        //public string FirstName { get; set; }
-        //public string LastName { get; set; }
-        //public string RoleName { get; set; }
+                // Convert to New User record..
+                JavaScriptSerializer jss = new JavaScriptSerializer();
+                User user = jss.Deserialize<User>(JSONdata);
+                if (user == null)
+                {
+                    // Error: Couldn't deserialize JSON String
+                    result.WasSuccessful = 0;
+                    result.Exception = "Unable to deserialize the JSON data.";
+                    return result;
+                }
+                AuthenticationDataContext dc = new AuthenticationDataContext();
+                returnCode = (int)dc.sp_appAuth_Membership_UpdateUser(
+                user.AppName,
+                user.UserName,
+                user.Email,
+                user.Role,
+                user.FirstName,
+                user.LastName,
+                user.IsApproved,
+                user.LastLoginDate);
+                dc.SubmitChanges();
+
+                result.ReturnCode = 1;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.WasSuccessful = -1;
+                result.Exception = "An exception occurred: " + ex.Message;
+                return result;  //Failed
+            }
+        }
+
+        public wsSQLResult SetPassword(Stream JSONdataStream)
+        {
+            wsSQLResult result = new wsSQLResult();
+            try
+            {
+                //Read JSON Stream into a String..
+                StreamReader reader = new StreamReader(JSONdataStream);
+                string JSONdata = reader.ReadToEnd();
+
+                // Convert to New User record..
+                JavaScriptSerializer jss = new JavaScriptSerializer();
+                User user = jss.Deserialize<User>(JSONdata);
+                if (user == null)
+                {
+                    // Error: Couldn't deserialize JSON String
+                    result.WasSuccessful = 0;
+                    result.Exception = "Unable to deserialize the JSON data.";
+                    return result;
+                }
+                AuthenticationDataContext dc = new AuthenticationDataContext();
+                returnCode = (int)dc.sp_appAuth_Membership_SetPassword(
+                user.AppName,
+                user.UserName,
+                user.HashPassword);
+                dc.SubmitChanges();
+
+                result.ReturnCode = 1;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.WasSuccessful = -1;
+                result.Exception = "An exception occurred: " + ex.Message;
+                return result;  //Failed
+            }
+        }
+        #endregion
+
+        #region Apps
+        public wsSQLResult InsertNewApp(string AppName)
+        {
+            wsSQLResult result = new wsSQLResult();
+            try
+            {
+                Guid? r = new Guid?();
+                AuthenticationDataContext dc = new AuthenticationDataContext();
+
+                // Run Create Application Stored Procedure
+                result.ReturnCode = (int)dc.sp_appAuth_Applications_CreateApplication(
+                                   AppName,
+                                   ref r);
+                dc.SubmitChanges();
+
+                result.WasSuccessful = 1;
+                result.Exception = "";
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.WasSuccessful = 0;
+                result.Exception = ex.Message;
+                return result;
+            }
+        }
+
+        public wsSQLResult UpdateApp(Stream JSONdataStream)
+        {
+            wsSQLResult result = new wsSQLResult();
+            try
+            {
+                //Read JSON Stream into a String..
+                StreamReader reader = new StreamReader(JSONdataStream);
+                string JSONdata = reader.ReadToEnd();
+
+                // Convert to New User record..
+                JavaScriptSerializer jss = new JavaScriptSerializer();
+                App app = jss.Deserialize<App>(JSONdata);
+                if (app == null)
+                {
+                    // Error: Couldn't deserialize JSON String
+                    result.WasSuccessful = 0;
+                    result.Exception = "Unable to deserialize the JSON data.";
+                    return result;
+                }
+                AuthenticationDataContext dc = new AuthenticationDataContext();
+                appAuth_Application currentApp = dc.appAuth_Applications.Where(a => a.AppID == a.AppID).FirstOrDefault();
+                if (currentApp == null)
+                {
+                    // Couldnt Find User to Update
+                    result.WasSuccessful = -3;
+                    result.Exception = "Could not find a [appAuth_Application] record with ID: " + app.AppName.ToString();
+                    return result;
+                }
+
+                // Update Record to SQL Server Table
+                currentApp.AppName = app.AppName;
+                currentApp.Description = app.Description;
+
+                dc.SubmitChanges();
+
+                result.WasSuccessful = 1;
+                result.Exception = "";
+                return result;  //Success
+            }
+            catch (Exception ex)
+            {
+                result.WasSuccessful = -1;
+                result.Exception = "An exception occurred: " + ex.Message;
+                return result;  //Failed
+            }
+        }
+
+        #endregion  
+
+        #region Roles
+        public wsSQLResult InsertNewRole(Stream JSONdataStream)
+        {
+            wsSQLResult result = new wsSQLResult();
+            try
+            {
+                //Read JSON Stream into a String..
+                StreamReader reader = new StreamReader(JSONdataStream);
+                string JSONdata = reader.ReadToEnd();
+
+                // Convert to New Role record..
+                JavaScriptSerializer jss = new JavaScriptSerializer();
+                Role role = jss.Deserialize<Role>(JSONdata);
+                if (role == null)
+                {
+                    // Error: Couldn't deserialize JSON String
+                    result.WasSuccessful = 0;
+                    result.Exception = "Unable to deserialize the JSON data.";
+                    return result;
+                }
+
+                Guid? r = new Guid?();
+                AuthenticationDataContext dc = new AuthenticationDataContext();
+
+                // Run Create Role Stored Procedure
+                result.ReturnCode = (int)dc.sp_appAuth_Roles_CreateRole(
+                                   role.RoleName,
+                                   role.AppName,
+                                   ref r);
+                dc.SubmitChanges();
+
+                result.WasSuccessful = 1;
+                result.Exception = "";
+                return result;
+            }
+            catch (Exception ex)
+            {
+                result.WasSuccessful = 0;
+                result.Exception = ex.Message;
+                return result;
+            }
+        }
+
+        public wsSQLResult UpdateRole(Stream JSONdataStream)
+        {
+            wsSQLResult result = new wsSQLResult();
+            try
+            {
+                //Read JSON Stream into a String..
+                StreamReader reader = new StreamReader(JSONdataStream);
+                string JSONdata = reader.ReadToEnd();
+
+                // Convert to New User record..
+                JavaScriptSerializer jss = new JavaScriptSerializer();
+                Role role = jss.Deserialize<Role>(JSONdata);
+                if (role == null)
+                {
+                    // Error: Couldn't deserialize JSON String
+                    result.WasSuccessful = 0;
+                    result.Exception = "Unable to deserialize the JSON data.";
+                    return result;
+                }
+                AuthenticationDataContext dc = new AuthenticationDataContext();
+                appAuth_Role currentRole = dc.appAuth_Roles.Where(r => r.RoleID == r.RoleID).FirstOrDefault();
+                if (currentRole == null)
+                {
+                    // Couldnt Find User to Update
+                    result.WasSuccessful = -3;
+                    result.Exception = "Could not find a [appAuth_Role] record with ID: " + role.RoleName.ToString();
+                    return result;
+                }
+
+                // Update Record to SQL Server Table
+                currentRole.RoleName = role.RoleName;
+                currentRole.Description = role.Description;
+                dc.SubmitChanges();
+
+                result.WasSuccessful = 1;
+                result.Exception = "";
+                return result;  //Success
+            }
+            catch (Exception ex)
+            {
+                result.WasSuccessful = -1;
+                result.Exception = "An exception occurred: " + ex.Message;
+                return result;  //Failed
+            }
+        }
+
+        #endregion
 
         public int returnCode {get; set;}
         public string returnReason {get; set; }

@@ -30,6 +30,12 @@ namespace AuthenticationService.Data
 		
     #region Extensibility Method Definitions
     partial void OnCreated();
+    partial void InsertappAuth_Role(appAuth_Role instance);
+    partial void UpdateappAuth_Role(appAuth_Role instance);
+    partial void DeleteappAuth_Role(appAuth_Role instance);
+    partial void InsertappAuth_Application(appAuth_Application instance);
+    partial void UpdateappAuth_Application(appAuth_Application instance);
+    partial void DeleteappAuth_Application(appAuth_Application instance);
     #endregion
 		
 		public AuthenticationDataContext() : 
@@ -78,63 +84,94 @@ namespace AuthenticationService.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.appAuth_Applications_CreateApplication")]
-		public int appAuth_Applications_CreateApplication([global::System.Data.Linq.Mapping.ParameterAttribute(Name="AppName", DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="AppId", DbType="UniqueIdentifier")] ref System.Nullable<System.Guid> appId)
+		public System.Data.Linq.Table<appAuth_Role> appAuth_Roles
+		{
+			get
+			{
+				return this.GetTable<appAuth_Role>();
+			}
+		}
+		
+		public System.Data.Linq.Table<appAuth_Application> appAuth_Applications
+		{
+			get
+			{
+				return this.GetTable<appAuth_Application>();
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.sp_appAuth_Applications_CreateApplication")]
+		public int sp_appAuth_Applications_CreateApplication([global::System.Data.Linq.Mapping.ParameterAttribute(Name="AppName", DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="AppId", DbType="UniqueIdentifier")] ref System.Nullable<System.Guid> appId)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), appName, appId);
 			appId = ((System.Nullable<System.Guid>)(result.GetParameterValue(1)));
 			return ((int)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.appAuth_Checks")]
-		public ISingleResult<appAuth_ChecksResult> appAuth_Checks([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(256)")] string userName, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(256)")] string email)
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.sp_appAuth_Checks")]
+		public ISingleResult<sp_appAuth_ChecksResult> sp_appAuth_Checks([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(256)")] string userName, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(256)")] string email)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), appName, userName, email);
-			return ((ISingleResult<appAuth_ChecksResult>)(result.ReturnValue));
+			return ((ISingleResult<sp_appAuth_ChecksResult>)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.appAuth_Membership_SetPassword")]
-		public int appAuth_Membership_SetPassword([global::System.Data.Linq.Mapping.ParameterAttribute(Name="AppName", DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UserName", DbType="NVarChar(256)")] string userName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="NewPassword", DbType="NVarChar(256)")] string newPassword)
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.sp_appAuth_Membership_SetPassword")]
+		public int sp_appAuth_Membership_SetPassword([global::System.Data.Linq.Mapping.ParameterAttribute(Name="AppName", DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UserName", DbType="NVarChar(256)")] string userName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="NewPassword", DbType="NVarChar(256)")] string newPassword)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), appName, userName, newPassword);
 			return ((int)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.appAuth_Membership_UpdateUser")]
-		public int appAuth_Membership_UpdateUser([global::System.Data.Linq.Mapping.ParameterAttribute(Name="AppName", DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UserName", DbType="NVarChar(256)")] string userName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Email", DbType="NVarChar(256)")] string email, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsApproved", DbType="Bit")] System.Nullable<bool> isApproved, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="LastLoginDate", DbType="DateTime")] System.Nullable<System.DateTime> lastLoginDate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="LastActivityDate", DbType="DateTime")] System.Nullable<System.DateTime> lastActivityDate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UniqueEmail", DbType="Int")] System.Nullable<int> uniqueEmail, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CurrentTimeUtc", DbType="DateTime")] System.Nullable<System.DateTime> currentTimeUtc)
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.sp_appAuth_UserInfo")]
+		public ISingleResult<sp_appAuth_UserInfoResult> sp_appAuth_UserInfo([global::System.Data.Linq.Mapping.ParameterAttribute(Name="UserID", DbType="UniqueIdentifier")] System.Nullable<System.Guid> userID)
 		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), appName, userName, email, isApproved, lastLoginDate, lastActivityDate, uniqueEmail, currentTimeUtc);
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), userID);
+			return ((ISingleResult<sp_appAuth_UserInfoResult>)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.sp_appAuth_Users_CreateUser")]
+		public int sp_appAuth_Users_CreateUser([global::System.Data.Linq.Mapping.ParameterAttribute(Name="AppId", DbType="UniqueIdentifier")] System.Nullable<System.Guid> appId, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UserName", DbType="NVarChar(256)")] string userName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="LastActivityDate", DbType="DateTime")] System.Nullable<System.DateTime> lastActivityDate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RoleID", DbType="UniqueIdentifier")] System.Nullable<System.Guid> roleID, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UserId", DbType="UniqueIdentifier")] ref System.Nullable<System.Guid> userId)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), appId, userName, lastActivityDate, roleID, userId);
+			userId = ((System.Nullable<System.Guid>)(result.GetParameterValue(4)));
 			return ((int)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.appAuth_Roles_CreateRole")]
-		public int appAuth_Roles_CreateRole([global::System.Data.Linq.Mapping.ParameterAttribute(Name="AppName", DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RoleName", DbType="NVarChar(256)")] string roleName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RoleID", DbType="UniqueIdentifier")] ref System.Nullable<System.Guid> roleID)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), appName, roleName, roleID);
-			roleID = ((System.Nullable<System.Guid>)(result.GetParameterValue(2)));
-			return ((int)(result.ReturnValue));
-		}
-		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.appAuth_Users_DeleteUser")]
-		public int appAuth_Users_DeleteUser([global::System.Data.Linq.Mapping.ParameterAttribute(Name="AppName", DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UserName", DbType="NVarChar(256)")] string userName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TablesToDeleteFrom", DbType="Int")] System.Nullable<int> tablesToDeleteFrom, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="NumTablesDeletedFrom", DbType="Int")] ref System.Nullable<int> numTablesDeletedFrom)
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.sp_appAuth_Users_DeleteUser")]
+		public int sp_appAuth_Users_DeleteUser([global::System.Data.Linq.Mapping.ParameterAttribute(Name="AppName", DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UserName", DbType="NVarChar(256)")] string userName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="TablesToDeleteFrom", DbType="Int")] System.Nullable<int> tablesToDeleteFrom, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="NumTablesDeletedFrom", DbType="Int")] ref System.Nullable<int> numTablesDeletedFrom)
 		{
 			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), appName, userName, tablesToDeleteFrom, numTablesDeletedFrom);
 			numTablesDeletedFrom = ((System.Nullable<int>)(result.GetParameterValue(3)));
 			return ((int)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.appAuth_ValidateUser")]
-		public ISingleResult<appAuth_ValidateUserResult> appAuth_ValidateUser([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(256)")] string userName, [global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(MAX)")] string password)
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.sp_appAuth_ValidateUser")]
+		public ISingleResult<sp_appAuth_ValidateUserResult> sp_appAuth_ValidateUser([global::System.Data.Linq.Mapping.ParameterAttribute(DbType="NVarChar(256)")] string appName)
 		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), appName, userName, password);
-			return ((ISingleResult<appAuth_ValidateUserResult>)(result.ReturnValue));
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), appName);
+			return ((ISingleResult<sp_appAuth_ValidateUserResult>)(result.ReturnValue));
 		}
 		
-		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.appAuth_Membership_CreateUser")]
-		public int appAuth_Membership_CreateUser([global::System.Data.Linq.Mapping.ParameterAttribute(Name="AppName", DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UserName", DbType="NVarChar(256)")] string userName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PrePassword", DbType="NVarChar(MAX)")] string prePassword, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Email", DbType="NVarChar(256)")] string email, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CurrentTimeUtc", DbType="DateTime")] System.Nullable<System.DateTime> currentTimeUtc, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RoleName", DbType="NVarChar(256)")] string roleName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsApproved", DbType="Bit")] System.Nullable<bool> isApproved, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="CreateDate", DbType="DateTime")] System.Nullable<System.DateTime> createDate, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UniqueEmail", DbType="Int")] System.Nullable<int> uniqueEmail, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UserId", DbType="UniqueIdentifier")] ref System.Nullable<System.Guid> userId)
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.sp_appAuth_Membership_CreateUser")]
+		public int sp_appAuth_Membership_CreateUser([global::System.Data.Linq.Mapping.ParameterAttribute(Name="AppName", DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UserName", DbType="NVarChar(256)")] string userName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="PrePassword", DbType="NVarChar(MAX)")] string prePassword, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Email", DbType="NVarChar(256)")] string email, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UserId", DbType="UniqueIdentifier")] ref System.Nullable<System.Guid> userId)
 		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), appName, userName, prePassword, email, currentTimeUtc, roleName, isApproved, createDate, uniqueEmail, userId);
-			userId = ((System.Nullable<System.Guid>)(result.GetParameterValue(9)));
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), appName, userName, prePassword, email, userId);
+			userId = ((System.Nullable<System.Guid>)(result.GetParameterValue(4)));
+			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.sp_appAuth_Roles_CreateRole")]
+		public int sp_appAuth_Roles_CreateRole([global::System.Data.Linq.Mapping.ParameterAttribute(Name="AppName", DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RoleName", DbType="NVarChar(256)")] string roleName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RoleID", DbType="UniqueIdentifier")] ref System.Nullable<System.Guid> roleID)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), appName, roleName, roleID);
+			roleID = ((System.Nullable<System.Guid>)(result.GetParameterValue(2)));
+			return ((int)(result.ReturnValue));
+		}
+		
+		[global::System.Data.Linq.Mapping.FunctionAttribute(Name="dbo.sp_appAuth_Membership_UpdateUser")]
+		public int sp_appAuth_Membership_UpdateUser([global::System.Data.Linq.Mapping.ParameterAttribute(Name="AppName", DbType="NVarChar(256)")] string appName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="UserName", DbType="NVarChar(256)")] string userName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="Email", DbType="NVarChar(256)")] string email, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="RoleName", DbType="NVarChar(256)")] string roleName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="FirstName", DbType="NVarChar(256)")] string firstName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="LastName", DbType="NVarChar(256)")] string lastName, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="IsApproved", DbType="Bit")] System.Nullable<bool> isApproved, [global::System.Data.Linq.Mapping.ParameterAttribute(Name="LastLoginDate", DbType="DateTime")] System.Nullable<System.DateTime> lastLoginDate)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), appName, userName, email, roleName, firstName, lastName, isApproved, lastLoginDate);
 			return ((int)(result.ReturnValue));
 		}
 	}
@@ -409,14 +446,375 @@ namespace AuthenticationService.Data
 		}
 	}
 	
-	public partial class appAuth_ChecksResult
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.appAuth_Roles")]
+	public partial class appAuth_Role : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private System.Guid _RoleID;
+		
+		private System.Guid _AppID;
+		
+		private string _RoleName;
+		
+		private string _Description;
+		
+		private string _LoweredRoleName;
+		
+		private EntityRef<appAuth_Application> _appAuth_Application;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnRoleIDChanging(System.Guid value);
+    partial void OnRoleIDChanged();
+    partial void OnAppIDChanging(System.Guid value);
+    partial void OnAppIDChanged();
+    partial void OnRoleNameChanging(string value);
+    partial void OnRoleNameChanged();
+    partial void OnDescriptionChanging(string value);
+    partial void OnDescriptionChanged();
+    partial void OnLoweredRoleNameChanging(string value);
+    partial void OnLoweredRoleNameChanged();
+    #endregion
+		
+		public appAuth_Role()
+		{
+			this._appAuth_Application = default(EntityRef<appAuth_Application>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RoleID", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid RoleID
+		{
+			get
+			{
+				return this._RoleID;
+			}
+			set
+			{
+				if ((this._RoleID != value))
+				{
+					this.OnRoleIDChanging(value);
+					this.SendPropertyChanging();
+					this._RoleID = value;
+					this.SendPropertyChanged("RoleID");
+					this.OnRoleIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AppID", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid AppID
+		{
+			get
+			{
+				return this._AppID;
+			}
+			set
+			{
+				if ((this._AppID != value))
+				{
+					if (this._appAuth_Application.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnAppIDChanging(value);
+					this.SendPropertyChanging();
+					this._AppID = value;
+					this.SendPropertyChanged("AppID");
+					this.OnAppIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_RoleName", DbType="NVarChar(256) NOT NULL", CanBeNull=false)]
+		public string RoleName
+		{
+			get
+			{
+				return this._RoleName;
+			}
+			set
+			{
+				if ((this._RoleName != value))
+				{
+					this.OnRoleNameChanging(value);
+					this.SendPropertyChanging();
+					this._RoleName = value;
+					this.SendPropertyChanged("RoleName");
+					this.OnRoleNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NVarChar(256)")]
+		public string Description
+		{
+			get
+			{
+				return this._Description;
+			}
+			set
+			{
+				if ((this._Description != value))
+				{
+					this.OnDescriptionChanging(value);
+					this.SendPropertyChanging();
+					this._Description = value;
+					this.SendPropertyChanged("Description");
+					this.OnDescriptionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LoweredRoleName", DbType="NVarChar(256)")]
+		public string LoweredRoleName
+		{
+			get
+			{
+				return this._LoweredRoleName;
+			}
+			set
+			{
+				if ((this._LoweredRoleName != value))
+				{
+					this.OnLoweredRoleNameChanging(value);
+					this.SendPropertyChanging();
+					this._LoweredRoleName = value;
+					this.SendPropertyChanged("LoweredRoleName");
+					this.OnLoweredRoleNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="appAuth_Application_appAuth_Role", Storage="_appAuth_Application", ThisKey="AppID", OtherKey="AppID", IsForeignKey=true)]
+		public appAuth_Application appAuth_Application
+		{
+			get
+			{
+				return this._appAuth_Application.Entity;
+			}
+			set
+			{
+				appAuth_Application previousValue = this._appAuth_Application.Entity;
+				if (((previousValue != value) 
+							|| (this._appAuth_Application.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._appAuth_Application.Entity = null;
+						previousValue.appAuth_Roles.Remove(this);
+					}
+					this._appAuth_Application.Entity = value;
+					if ((value != null))
+					{
+						value.appAuth_Roles.Add(this);
+						this._AppID = value.AppID;
+					}
+					else
+					{
+						this._AppID = default(System.Guid);
+					}
+					this.SendPropertyChanged("appAuth_Application");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.appAuth_Applications")]
+	public partial class appAuth_Application : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private string _AppName;
+		
+		private System.Guid _AppID;
+		
+		private string _Description;
+		
+		private string _LoweredAppName;
+		
+		private EntitySet<appAuth_Role> _appAuth_Roles;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnAppNameChanging(string value);
+    partial void OnAppNameChanged();
+    partial void OnAppIDChanging(System.Guid value);
+    partial void OnAppIDChanged();
+    partial void OnDescriptionChanging(string value);
+    partial void OnDescriptionChanged();
+    partial void OnLoweredAppNameChanging(string value);
+    partial void OnLoweredAppNameChanged();
+    #endregion
+		
+		public appAuth_Application()
+		{
+			this._appAuth_Roles = new EntitySet<appAuth_Role>(new Action<appAuth_Role>(this.attach_appAuth_Roles), new Action<appAuth_Role>(this.detach_appAuth_Roles));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AppName", DbType="NVarChar(256) NOT NULL", CanBeNull=false)]
+		public string AppName
+		{
+			get
+			{
+				return this._AppName;
+			}
+			set
+			{
+				if ((this._AppName != value))
+				{
+					this.OnAppNameChanging(value);
+					this.SendPropertyChanging();
+					this._AppName = value;
+					this.SendPropertyChanged("AppName");
+					this.OnAppNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_AppID", DbType="UniqueIdentifier NOT NULL", IsPrimaryKey=true)]
+		public System.Guid AppID
+		{
+			get
+			{
+				return this._AppID;
+			}
+			set
+			{
+				if ((this._AppID != value))
+				{
+					this.OnAppIDChanging(value);
+					this.SendPropertyChanging();
+					this._AppID = value;
+					this.SendPropertyChanged("AppID");
+					this.OnAppIDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Description", DbType="NVarChar(256) NOT NULL", CanBeNull=false)]
+		public string Description
+		{
+			get
+			{
+				return this._Description;
+			}
+			set
+			{
+				if ((this._Description != value))
+				{
+					this.OnDescriptionChanging(value);
+					this.SendPropertyChanging();
+					this._Description = value;
+					this.SendPropertyChanged("Description");
+					this.OnDescriptionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LoweredAppName", DbType="NVarChar(256)")]
+		public string LoweredAppName
+		{
+			get
+			{
+				return this._LoweredAppName;
+			}
+			set
+			{
+				if ((this._LoweredAppName != value))
+				{
+					this.OnLoweredAppNameChanging(value);
+					this.SendPropertyChanging();
+					this._LoweredAppName = value;
+					this.SendPropertyChanged("LoweredAppName");
+					this.OnLoweredAppNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="appAuth_Application_appAuth_Role", Storage="_appAuth_Roles", ThisKey="AppID", OtherKey="AppID")]
+		public EntitySet<appAuth_Role> appAuth_Roles
+		{
+			get
+			{
+				return this._appAuth_Roles;
+			}
+			set
+			{
+				this._appAuth_Roles.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_appAuth_Roles(appAuth_Role entity)
+		{
+			this.SendPropertyChanging();
+			entity.appAuth_Application = this;
+		}
+		
+		private void detach_appAuth_Roles(appAuth_Role entity)
+		{
+			this.SendPropertyChanging();
+			entity.appAuth_Application = null;
+		}
+	}
+	
+	public partial class sp_appAuth_ChecksResult
 	{
 		
 		private System.Nullable<int> _ReturnCode;
 		
 		private string _ReturnReason;
 		
-		public appAuth_ChecksResult()
+		public sp_appAuth_ChecksResult()
 		{
 		}
 		
@@ -453,16 +851,16 @@ namespace AuthenticationService.Data
 		}
 	}
 	
-	public partial class appAuth_ValidateUserResult
+	public partial class sp_appAuth_UserInfoResult
 	{
 		
 		private string _UserName;
 		
+		private string _Email;
+		
 		private string _FirstName;
 		
 		private string _LastName;
-		
-		private string _Email;
 		
 		private string _RoleName;
 		
@@ -470,11 +868,7 @@ namespace AuthenticationService.Data
 		
 		private System.DateTime _LastActivityDate;
 		
-		private string _ReturnCode;
-		
-		private string _ReturnReason;
-		
-		public appAuth_ValidateUserResult()
+		public sp_appAuth_UserInfoResult()
 		{
 		}
 		
@@ -490,6 +884,22 @@ namespace AuthenticationService.Data
 				if ((this._UserName != value))
 				{
 					this._UserName = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Email", DbType="NVarChar(256) NOT NULL", CanBeNull=false)]
+		public string Email
+		{
+			get
+			{
+				return this._Email;
+			}
+			set
+			{
+				if ((this._Email != value))
+				{
+					this._Email = value;
 				}
 			}
 		}
@@ -522,22 +932,6 @@ namespace AuthenticationService.Data
 				if ((this._LastName != value))
 				{
 					this._LastName = value;
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Email", DbType="NVarChar(256) NOT NULL", CanBeNull=false)]
-		public string Email
-		{
-			get
-			{
-				return this._Email;
-			}
-			set
-			{
-				if ((this._Email != value))
-				{
-					this._Email = value;
 				}
 			}
 		}
@@ -589,35 +983,65 @@ namespace AuthenticationService.Data
 				}
 			}
 		}
+	}
+	
+	public partial class sp_appAuth_ValidateUserResult
+	{
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReturnCode", DbType="NVarChar(10)")]
-		public string ReturnCode
+		private System.Guid _UserID;
+		
+		private string _UserName;
+		
+		private string _Password;
+		
+		public sp_appAuth_ValidateUserResult()
+		{
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserID", DbType="UniqueIdentifier NOT NULL")]
+		public System.Guid UserID
 		{
 			get
 			{
-				return this._ReturnCode;
+				return this._UserID;
 			}
 			set
 			{
-				if ((this._ReturnCode != value))
+				if ((this._UserID != value))
 				{
-					this._ReturnCode = value;
+					this._UserID = value;
 				}
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ReturnReason", DbType="NVarChar(100)")]
-		public string ReturnReason
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_UserName", DbType="NVarChar(256) NOT NULL", CanBeNull=false)]
+		public string UserName
 		{
 			get
 			{
-				return this._ReturnReason;
+				return this._UserName;
 			}
 			set
 			{
-				if ((this._ReturnReason != value))
+				if ((this._UserName != value))
 				{
-					this._ReturnReason = value;
+					this._UserName = value;
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Password", DbType="NVarChar(MAX)")]
+		public string Password
+		{
+			get
+			{
+				return this._Password;
+			}
+			set
+			{
+				if ((this._Password != value))
+				{
+					this._Password = value;
 				}
 			}
 		}

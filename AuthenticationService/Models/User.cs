@@ -18,7 +18,7 @@ namespace AuthenticationService.Models
         public string UserName { get; set; }
 
         [DataMember]
-        public string HashedPassword { get; set; }
+        public string HashPassword { get; set; }
 
         [DataMember]
         public string Email { get; set; }
@@ -31,5 +31,15 @@ namespace AuthenticationService.Models
 
         [DataMember]
         public string LastName { get; set; }
+
+        [DataMember]
+        public Guid UserID { get; set; }
+
+        [DataMember]
+        public bool IsApproved { get; set; }
+
+        [DataMember]
+        public DateTime LastLoginDate { get; set; }
+
         }
 }

@@ -36,6 +36,5 @@ namespace AuthenticationService.Models
 
         [DataMember]
         public string ReturnReason { get; set; }
-
         }
 }
